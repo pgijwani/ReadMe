@@ -1,0 +1,31 @@
+
+  
+1. "/stats end point should accept no data " as in POST method should not be allowed for /stats endpoint. 
+  However, when we send a POST call for /stats, the response is 200 OK and the requests and average time data is displayed whoch is incorrect
+
+Test result : FAIL
+
+2. When no data is entered in the json and POST call is made to the /hash endpoint, 200 OK status comes up and a job identifier also comes up as a response.
+  When there is no data entered while making a POST call,204 No Content status code can be displayed instead of 200 OK.
+  Also No job identifier should be displayed as a response
+  
+Test result: FAIL
+
+3. When we pass an empty string for password and send a POST call to /hash endpoint, 200 OK response code comes up which is incorrect. Generally, when a property is mandatory, ie. required, 
+it can never be null.
+
+Test Result: FAIL
+
+4. When the value(here value of the password) is angry monkey and the key(password) is changed, the resultant base64 encoded password should be the same
+
+for {"pwd":"angrymonkey"}, the base64 encoded password is : z4PhNX7vuL3xVChQ1m2AB9Yg5AULVxXcg/SpIdNs6c5H0NE8XYXysP+DGNKHfuwvY7kxvUdBeoGlODJ6+SfaPg==
+for {"password":"angrymonkey"}, the base64 encoded password is: NN0PAKtieayiTY8/Qd53AeMzHkbvZDdwYYiDnwtDdv/FIWvcy1sKCb7qi7Nu8Q8Cd/MqjQeyCI0pWKDGp74A1g==
+
+Test Result: FAIL
+
+5. A different key in place of password can be passed in A POST to hash endpoint. There should be some kind of validation around what is passed in the body of the POST request 
+to the /hash endpoint
+
+6. There should be some validation around the total number of characters that will be allowed for password. It accepts just 1 character("1"), special characters(+++), empty space.
+
+
