@@ -1,0 +1,178 @@
+from locust import HttpUser, between, SequentialTaskSet, task, tag
+
+import TestData
+import uuid
+import string
+import random
+
+#auth properties
+/auth = TestData.auth
+/grant = TestData.grant
+/scope = TestData.scope
+/authorization= TestData.authorization
+host=TestData.host
+/contentType=TestData.contentType
+
+#test level properties
+port= TestData.port
+password= TestData.password
+job_identifier= TestData.job_identifier
+
+
+
+
+
+
+
+class TestCases(SequentialTaskSet, object):
+
+    def __init__(self, parent):
+        super(TestCases, self).__init__(parent)
+        self.token = ''
+        self.awardId = ''
+
+    def on_start(self):
+
+         with self.client.post(f'{auth}/token?grant_type={grant}&scope={scope}',
+                          headers={
+                              'Authorization': authorization,
+                              'Content-Type': contentType},
+                          name='getToken') as getTokenResponse:
+            jsonData = getTokenResponse.json()
+            self.token = 'Bearer '+jsonData['access_token']
+
+   
+
+    @tag('PostHash')
+    @task()
+    def post_hash(self):
+        with self.client.post(f'/hash',
+                             headers={
+                                 'Authorization': self.token,
+                                 'Content-Type': 'application/json',
+                                 'password': 'angrymonkey',) as getResponse:
+            print('01 post_hash:' + postResponse.text)
+
+   @tag('PostHashnopasswordjson')
+    @task()
+    def post_hash_nopassword(self):
+        with self.client.post(f'/hash',
+                             headers={
+                                 'Authorization': self.token,
+                                 'Content-Type': 'application/json',) as getResponse:
+            print('02 post_hash_nopassword:' + postResponse.text)
+            
+     @tag('PostHashEmptyPassword')
+    @task()
+    def post_hash_empty_password(self):
+        with self.client.post(f'/hash',
+                             headers={
+                                 'Authorization': self.token,
+                                 'Content-Type': 'application/json',
+                                 'password': '',) as getResponse:
+            print('01 post_hash_empty_password:' + postResponse.text)
+            
+    @tag('PostHashwrongPwdKey')
+    @task()
+    def post_hash_wrong_password_key(self):
+        with self.client.post(f'/hash',
+                             headers={
+                                 'Authorization': self.token,
+                                 'Content-Type': 'application/json',
+                                 'password': 'angrymonkey',) as getResponse:
+            print('01 post_hash_wrong_password_key:' + postResponse.text)
+            
+            
+            @tag('PostHashBadPwdKey')
+    @task()
+    def post_hash_Bad_password_key(self):
+        with self.client.post(f'/hash',
+                             headers={
+                                 'Authorization': self.token,
+                                 'Content-Type': 'application/json',
+                                 'something': 'angrymonkey',) as getResponse:
+            print('01 post_hash_Bad_password_key:' + postResponse.text)
+
+
+@tag('PostHashinvalidlengthpassword')
+    @task()
+    def post_hash_Long_password(self):
+        with self.client.post(f'/hash',
+                             headers={
+                                 'Authorization': self.token,
+                                 'Content-Type': 'application/json',
+                                 'password': 'angrymonkeyddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd',) as getResponse:
+            print('01 post_hash_Long_password:' + postResponse.text)
+
+
+    @tag('PostHashspecialcharacterspassword')
+    @task()
+    def post_hash_Insecure_password(self):
+        with self.client.post(f'/hash',
+                             headers={
+                                 'Authorization': self.token,
+                                 'Content-Type': 'application/json',
+                                 'password': '#$%&',) as getResponse:
+            print('01 post_hash_Insecure_password:' + postResponse.text)
+            
+            
+    @tag('GetHash')
+    @task()
+    def get_hash(self):
+        with self.client.get(f'/hash/1',
+                             headers={
+                                 'Authorization': self.token,
+                                 'Content-Type': 'application/json',) as getResponse:
+            print('01 get_hash:' + getResponse.text)
+            
+            
+            
+       @tag('GetStats')
+    @task()
+    def get_stats(self):
+        with self.client.get(f'/hash/1',
+                             headers={
+                                 'Authorization': self.token,
+                                 'Content-Type': 'application/json',) as getResponse:
+            print('01 get_stats:' + getResponse.text)
+            
+            
+        @tag('PostStats')
+    @task()
+    def post_stats(self):
+        with self.client.get(f'/hash/1',
+                             headers={
+                                 'Authorization': self.token,
+                                 'Content-Type': 'application/json',) as getResponse:
+            print('01 post_stats:' + getResponse.text)
+            
+       @tag('PostShutDown')
+    @task()
+    def post_shut_down(self):
+        with self.client.get(f'/hash/1',
+                             headers={
+                                 'Authorization': self.token,
+                                 'Content-Type': 'application/json',) as getResponse:
+            print('01 post_shut_down:' + getResponse.text)
+            
+            
+        @tag('GetHashAgain')
+    @task()
+    def get_hash_again(self):
+        with self.client.get(f'/hash/1',
+                             headers={
+                                 'Authorization': self.token,
+                                 'Content-Type': 'application/json',) as getResponse:
+            print('01 get_hash_again:' + getResponse.text)
+            
+         
+            
+            
+           
+
+class MyUser(HttpUser):
+    wait_time=between(1, 2)
+    tasks=[TestCases]
+    host=host
+
+
