@@ -1,0 +1,13 @@
+PASS: test_post_hash_successful
+PASS: test_get_hash_successful
+PASS: test_get_stats_successful
+PASS: test_shutdown_successful
+Fail: test_post_hash_empty_json
+Fail: test_post_hash_empty_string_json
+Fail: test_post_hash_pwd_key_json
+Fail: test_post_hash_invalid_key_json
+Fail: test_post_hash_large_password_json
+Fail: test_post_hash_special_characters_json
+Fail: test_post_hash_minimum_time_process
+Pass: test_get_hash_inprogress_requests_before_shutdown
+Pass: test_get_hash_post_shutdown
